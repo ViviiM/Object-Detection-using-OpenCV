@@ -129,16 +129,31 @@ def detect_objects():
     
     detections_list = []
     
-    blob = cv2.dnn.blobFromImage(frame, 0.007843, (300, 300), 127.5)
+    blob = cv2.dnn.blobFromImage(frame, 0.007843, (300, 300), (127.5, 127.5, 127.5), swapRB=False)
     net.setInput(blob)
     detections = net.forward()
 
     for i in np.arange(0, detections.shape[2]):
         confidence = detections[0, 0, i, 2]
+        
+        # Debug high confidence issues
+        if confidence > 1.0:
+            print(f"Warning: Raw confidence > 1.0 detected: {confidence}. Clamping.")
+            
+        # Clamp confidence to [0, 1] range to avoid UI bugs
+        confidence = min(max(float(confidence), 0.0), 1.0)
+
         if confidence > 0.5:
             idx = int(detections[0, 0, i, 1])
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
             (startX, startY, endX, endY) = box.astype("int")
+            
+            # Additional bounds check for box coordinates
+            startX = max(0, startX)
+            startY = max(0, startY)
+            endX = min(w, endX)
+            endY = min(h, endY)
+
             label = CLASSES[idx]
             
             # Simulated OCR
@@ -148,8 +163,8 @@ def detect_objects():
 
             detections_list.append({
                 "label": label,
-                "confidence": float(confidence),
-                "box": [int(startX), int(startY), int(endX), int(endY)],
+                "confidence": confidence,
+                "box": [startX, startY, endX, endY],
                 "plate": plate_text
             })
 
