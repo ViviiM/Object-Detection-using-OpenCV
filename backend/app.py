@@ -15,7 +15,7 @@ CORS(app)  # Enable CORS for all routes
 PROTOTXT = "MobileNetSSD_deploy.prototxt"
 MODEL = "MobileNetSSD_deploy.caffemodel"
 
-CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor", "pen"]
+CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
 COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
 
 # Initialize net if possible
@@ -181,5 +181,5 @@ def health():
     return jsonify({"status": "ok", "model_loaded": net is not None})
 
 if __name__ == '__main__':
-    # Using port 5000 as standard for Flask (User's previous code had 3000 which conflicts with React usually)
+    # Using port 3000 for the API
     app.run(host='0.0.0.0', port=3000)
