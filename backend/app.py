@@ -163,8 +163,8 @@ def detect_objects():
 
             detections_list.append({
                 "label": label,
-                "confidence": confidence,
-                "box": [startX, startY, endX, endY],
+                "confidence": float(confidence),
+                "box": [int(startX), int(startY), int(endX), int(endY)],
                 "plate": plate_text
             })
 
